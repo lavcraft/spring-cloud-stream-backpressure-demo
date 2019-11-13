@@ -1,0 +1,21 @@
+version: '3.7'
+
+services:
+  mongodb:
+    image: mongo:4.2.1
+    ports:
+      - 27017:27017
+  rabbitmq:
+    image: rabbitmq:3.7-management
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 250M
+        reservations:
+          cpus: '0.5'
+          memory: 200M
+    ports:
+      - 15672:15672
+      - 5672:5672
+

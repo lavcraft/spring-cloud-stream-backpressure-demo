@@ -1,0 +1,8 @@
+spring:
+  cloud:
+    stream:
+      bindings:
+        emit-out-0:
+          destionation: output
+
+

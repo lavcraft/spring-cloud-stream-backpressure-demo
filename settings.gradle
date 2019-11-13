@@ -1,0 +1,16 @@
+pluginManagement {
+	repositories {
+		gradlePluginPortal()
+	}
+}
+
+rootProject.name = 'scoop-with-spring'
+
+fileTree('.') {
+	include '**/build.gradle'
+	exclude 'build.gradle'
+}.collect {
+	relativePath(it.parent).replace(File.separator, ':')
+}.each {
+	include it
+}

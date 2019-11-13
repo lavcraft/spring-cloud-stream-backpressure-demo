@@ -1,0 +1,74 @@
+plugins {
+    id 'org.springframework.boot' version '2.2.1.RELEASE' apply false
+}
+
+ext {
+    serviceProjects = subprojects.findAll { it.name.endsWith('-service') }
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+apply plugin: 'java'
+
+allprojects {
+    repositories {
+        jcenter()
+        maven { url 'https://repo.spring.io/milestone' }
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+
+    sourceCompatibility = '11'
+    targetCompatibility = '11'
+
+    dependencies {
+        //dependency management
+        [
+                enforcedPlatform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES),
+                enforcedPlatform('org.springframework.cloud:spring-cloud-dependencies:Hoxton.RC2'),
+                platform('org.junit:junit-bom:5.5.2'),
+        ].each {
+            implementation it
+            annotationProcessor it
+            testAnnotationProcessor it
+        }
+
+        constraints {
+            ['com.github.javafaker:javafaker:1.0.1'
+            ].each {
+                compileOnly it
+                implementation it
+                testImplementation it
+                testRuntimeOnly it
+                annotationProcessor it
+                testAnnotationProcessor it
+            }
+        }
+
+        //declare dependencies
+        ['org.projectlombok:lombok',
+         'org.springframework.boot:spring-boot-configuration-processor'
+        ].each {
+            compileOnly it
+            testCompileOnly it
+            annotationProcessor it
+            testAnnotationProcessor it
+        }
+
+        testImplementation 'org.springframework.boot:spring-boot-starter-test',
+                'org.mockito:mockito-junit-jupiter',
+                'org.junit.jupiter:junit-jupiter-engine'
+    }
+}
+
+configure(serviceProjects) {
+    apply plugin: 'org.springframework.boot'
+
+    dependencies {
+        implementation project(':common')
+        implementation 'org.springframework.cloud:spring-cloud-stream-binder-rabbit'
+    }
+}
